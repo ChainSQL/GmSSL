@@ -1039,6 +1039,7 @@ $target{build_scheme} = [ $target{build_scheme} ]
 my ($builder, $builder_platform, @builder_opts) =
     @{$target{build_scheme}};
 
+$config{cflags} .= "-fvisibility=hidden";
 push @{$config{defines}}, "NDEBUG"    if $config{build_type} eq "release";
 
 if ($target =~ /^mingw/ && `$target{cc} --target-help 2>&1` =~ m/-mno-cygwin/m)
