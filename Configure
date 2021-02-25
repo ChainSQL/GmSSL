@@ -1359,6 +1359,8 @@ if (!$no_dso && $dso_scheme ne "")
 	$cflags = "$dso_cflags $cflags";
 	}
 
+$cflags = "-fvisibility=hidden $cflags";
+
 my $thread_cflags;
 my $thread_defines;
 if ($thread_cflag ne "(unknown)" && !$no_threads)
@@ -2081,7 +2083,7 @@ BEGIN
 	    VALUE "ProductVersion", "$version\\0"
 	    // Optional:
 	    //VALUE "Comments", "\\0"
-	    VALUE "LegalCopyright", "Copyright  © 1998-2005 The OpenSSL Project. Copyright © 1995-1998 Eric A. Young, Tim J. Hudson. All rights reserved.\\0"
+	    VALUE "LegalCopyright", "Copyright  ï¿½ 1998-2005 The OpenSSL Project. Copyright ï¿½ 1995-1998 Eric A. Young, Tim J. Hudson. All rights reserved.\\0"
 	    //VALUE "LegalTrademarks", "\\0"
 	    //VALUE "PrivateBuild", "\\0"
 	    //VALUE "SpecialBuild", "\\0"

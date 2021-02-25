@@ -8,6 +8,8 @@ CC=	cc
 INCLUDES=
 CFLAG=-g
 MAKEFILE=	Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=		ar r
 
 CFLAGS= $(INCLUDES) $(CFLAG)
@@ -16,7 +18,8 @@ GENERAL=Makefile
 TEST=
 APPS=
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBSRC=sms4_cbc.c sms4_cfb.c sms4_ecb.c sms4_ofb.c sms4_ctr.c sms4_wrap.c sms4_common.c sms4_setkey.c sms4_enc.c
 LIBOBJ=sms4_cbc.o sms4_cfb.o sms4_ecb.o sms4_ofb.o sms4_ctr.o sms4_wrap.o sms4_common.o sms4_setkey.o sms4_enc.o
 
@@ -33,8 +36,11 @@ top:
 all:	lib
 
 lib:	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 files:

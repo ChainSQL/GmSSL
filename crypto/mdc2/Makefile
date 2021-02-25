@@ -8,6 +8,8 @@ CC=	cc
 INCLUDES=
 CFLAG=-g
 MAKEFILE=	Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=		ar r
 
 CFLAGS= $(INCLUDES) $(CFLAG)
@@ -16,7 +18,8 @@ GENERAL=Makefile
 TEST= mdc2test.c
 APPS=
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBSRC=mdc2dgst.c mdc2_one.c
 LIBOBJ=mdc2dgst.o mdc2_one.o
 
@@ -33,8 +36,11 @@ top:
 all:	lib
 
 lib:	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 files:

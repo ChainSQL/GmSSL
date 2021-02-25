@@ -9,6 +9,8 @@ CPP=	$(CC) -E
 INCLUDES=
 CFLAG=-g
 MAKEFILE=	Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=		ar r
 
 AES_ENC=aes_core.o aes_cbc.o
@@ -22,7 +24,8 @@ GENERAL=Makefile
 TEST=
 APPS=
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBSRC=aes_core.c aes_misc.c aes_ecb.c aes_cbc.c aes_cfb.c aes_ofb.c \
        aes_ctr.c aes_ige.c aes_wrap.c
 LIBOBJ=aes_misc.o aes_ecb.o aes_cfb.o aes_ofb.o aes_ctr.o aes_ige.o aes_wrap.o \
@@ -41,8 +44,11 @@ top:
 all:	lib
 
 lib:	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 aes-ia64.s: asm/aes-ia64.S

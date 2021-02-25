@@ -8,6 +8,8 @@ CC=	cc
 INCLUDES= -I.. -I$(TOP) -I../../include
 CFLAG=-g
 MAKEFILE=	Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=		ar r
 
 CFLAGS= $(INCLUDES) $(CFLAG)
@@ -18,7 +20,8 @@ GENERAL=Makefile
 TEST=ectest.c
 APPS=
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBSRC=	ec_lib.c ecp_smpl.c ecp_mont.c ecp_nist.c ec_cvt.c ec_mult.c\
 	ec_err.c ec_curve.c ec_check.c ec_print.c ec_asn1.c ec_key.c\
 	ec2_smpl.c ec2_mult.c ec_ameth.c ec_pmeth.c eck_prn.c \
@@ -44,8 +47,11 @@ top:
 all:	lib
 
 lib:	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 ecp_nistz256-x86_64.s: asm/ecp_nistz256-x86_64.pl

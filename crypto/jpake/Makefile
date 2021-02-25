@@ -3,7 +3,8 @@ TOP=../..
 
 CFLAGS= $(INCLUDES) $(CFLAG)
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBOBJ=jpake.o jpake_err.o
 LIBSRC=jpake.c jpake_err.c
 
@@ -16,8 +17,11 @@ top:
 all:	lib
 
 lib:	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 links:

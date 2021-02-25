@@ -13,6 +13,10 @@ MAKEDEPPROG=	makedepend
 MAKEDEPEND=	$(TOP)/util/domd $(TOP) -MD $(MAKEDEPPROG)
 MAKEFILE=       Makefile
 RM=             rm -f
+# OBJCOPYRM= objcopy --strip-symbols ./gmalgRmInfo.txt
+OBJCOPYRM= objcopy --weaken-symbols ./gmalgRmInfo.txt
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=		ar r
 
 RECURSIVE_MAKE=	[ -n "$(SDIRS)" ] && for i in $(SDIRS) ; do \
@@ -33,7 +37,14 @@ LIBS=
 GENERAL=Makefile README crypto-lib.com install.com
 TEST=constant_time_test.c
 
+ALLFILEOBJ_PATH=./gmalg
+
 LIB= $(TOP)/libcrypto.a
+LIBNEW= $(TOP)/libgmcrypto.a
+LIBCRYPTOBJ= $(ALLFILEOBJ_PATH)/libfirst$(DIR).o
+LIBFINAL_CRYPTOBJ= $(TOP)/libcrypto.o
+LIBFINAL_CRYPTOBJ_STRIP= $(TOP)/libcryptostrip.o
+LIBCRYPTOBJ_HIDDEN= $(TOP)/libcryptohidden.o
 SHARED_LIB= libcrypto$(SHLIB_EXT)
 LIBSRC=	cryptlib.c mem.c mem_clr.c mem_dbg.c cversion.c ex_data.c cpt_err.c \
 	ebcdic.c uid.c o_time.c o_str.c o_dir.c o_fips.c o_init.c fips_ers.c
@@ -101,11 +112,26 @@ links:
 lib:	$(LIB)
 	@touch lib
 $(LIB):	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	test -z "$(FIPSLIBDIR)" || $(AR) $(LIB) $(FIPSLIBDIR)fipscanister.o
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# test -z "$(FIPSLIBDIR)" || $(AR) $(LIB) $(FIPSLIBDIR)fipscanister.o
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
+	test -z "$(FIPSLIBDIR)" || $(LD) $(FIPSLIBDIR)fipscanister.o -o $(LIBCRYPTOBJ)
+	# $(OBJCOPY) $(LIBCRYPTOBJ) $(LIBCRYPTOBJ)
+	# $(AR) $(LIB) $(LIBCRYPTOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
 
 shared: buildinf.h lib subdirs
+	# FILESNAME=$(wildcard $(ALLFILEOBJ_PATH)/*.o)
+	# files:=$(foreach file,$(FILESNAME),$(file))
+	$(LD) $(wildcard $(ALLFILEOBJ_PATH)/*.o) -o $(LIBFINAL_CRYPTOBJ)
+	# $(OBJCOPYRM) $(LIBFINAL_CRYPTOBJ) $(LIBFINAL_CRYPTOBJ_STRIP)
+	$(OBJCOPY) $(LIBFINAL_CRYPTOBJ) $(LIBCRYPTOBJ_HIDDEN)
+	$(AR) $(LIB) $(LIBCRYPTOBJ_HIDDEN)
+	$(OBJCOPYRM) $(LIB) $(LIBNEW)
+	#rm $(LIBFINAL_CRYPTOBJ) $(LIBCRYPTOBJ_HIDDEN)
+
 	if [ -n "$(SHARED_LIBS)" ]; then \
 		(cd ..; $(MAKE) $(SHARED_LIB)); \
 	fi

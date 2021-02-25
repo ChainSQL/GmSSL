@@ -8,6 +8,8 @@ CC=	cc
 CPP=    $(CC) -E
 INCLUDES=
 CFLAG=-g
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=		ar r
 
 RC4_ENC=rc4_enc.o rc4_skey.o
@@ -20,7 +22,8 @@ GENERAL=Makefile
 TEST=rc4test.c
 APPS=
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBSRC=rc4_skey.c rc4_enc.c rc4_utl.c
 LIBOBJ=$(RC4_ENC) rc4_utl.o
 
@@ -37,8 +40,11 @@ top:
 all:	lib
 
 lib:	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 rc4-586.s:	asm/rc4-586.pl ../perlasm/x86asm.pl

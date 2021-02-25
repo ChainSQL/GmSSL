@@ -9,6 +9,8 @@ CPP=	$(CC) -E
 INCLUDES=
 CFLAG=-g
 MAKEFILE=	Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=		ar r
 
 WP_ASM_OBJ=wp_block.o
@@ -21,6 +23,7 @@ GENERAL=Makefile
 TEST=wp_test.c
 APPS=
 
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
 LIB=$(TOP)/libcrypto.a
 LIBSRC=wp_dgst.c wp_block.c
 LIBOBJ=wp_dgst.o $(WP_ASM_OBJ)
@@ -38,8 +41,11 @@ top:
 all:	lib
 
 lib:	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 wp-mmx.s:	asm/wp-mmx.pl ../perlasm/x86asm.pl

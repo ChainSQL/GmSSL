@@ -9,6 +9,8 @@ CPP=    $(CC) -E
 INCLUDES=
 CFLAG=-g
 MAKEFILE=       Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=             ar r
 
 CFLAGS= $(INCLUDES) $(CFLAG)
@@ -17,7 +19,8 @@ GENERAL=Makefile
 TEST=md4test.c
 APPS=md4.c
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBSRC=md4_dgst.c md4_one.c
 LIBOBJ=md4_dgst.o md4_one.o
 
@@ -34,8 +37,11 @@ top:
 all:    lib
 
 lib:    $(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 files:

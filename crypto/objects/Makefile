@@ -8,6 +8,8 @@ CC=	cc
 INCLUDES= -I.. -I$(TOP) -I../../include
 CFLAG=-g
 MAKEFILE=	Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=		ar r
 PERL=		perl
 
@@ -17,6 +19,7 @@ GENERAL=Makefile README
 TEST=
 APPS=
 
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
 LIB=$(TOP)/libcrypto.a
 LIBSRC=	o_names.c obj_dat.c obj_lib.c obj_err.c obj_xref.c
 LIBOBJ= o_names.o obj_dat.o obj_lib.o obj_err.o obj_xref.o
@@ -34,8 +37,11 @@ top:
 all:	obj_dat.h obj_xref.h lib
 
 lib:	$(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 obj_dat.h: obj_dat.pl obj_mac.h

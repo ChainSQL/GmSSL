@@ -9,6 +9,8 @@ CPP=    $(CC) -E
 INCLUDES=
 CFLAG=-g
 MAKEFILE=       Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=     ld -r
 AR=             ar r
 
 SHA1_ASM_OBJ=
@@ -21,7 +23,8 @@ GENERAL=Makefile
 TEST=shatest.c sha1test.c sha256t.c sha512t.c
 APPS=
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBSRC=sha_dgst.c sha1dgst.c sha_one.c sha1_one.c sha256.c sha512.c
 LIBOBJ=sha_dgst.o sha1dgst.o sha_one.o sha1_one.o sha256.o sha512.o $(SHA1_ASM_OBJ)
 
@@ -38,8 +41,11 @@ top:
 all:    lib
 
 lib:    $(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 sha1-586.s:	asm/sha1-586.pl ../perlasm/x86asm.pl

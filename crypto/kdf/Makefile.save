@@ -16,7 +16,7 @@ GENERAL=Makefile
 TEST=kdftest.c
 APPS=
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
 LIBSRC=	kdf_x9_63.c
 LIBOBJ=	kdf_x9_63.o
 

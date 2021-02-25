@@ -9,6 +9,8 @@ CPP=    $(CC) -E
 INCLUDES=
 CFLAG=-g
 MAKEFILE=       Makefile
+OBJCOPY=    objcopy --localize-hidden
+LD=ld -r
 AR=             ar r
 
 RIP_ASM_OBJ=
@@ -21,7 +23,8 @@ GENERAL=Makefile
 TEST=rmdtest.c
 APPS=
 
-LIB=$(TOP)/libcrypto.a
+LIBCRYPTOBJ= ../gmalg/lib$(DIR).o
+LIB= $(TOP)/libcrypto.a
 LIBSRC=rmd_dgst.c rmd_one.c
 LIBOBJ=rmd_dgst.o rmd_one.o $(RMD160_ASM_OBJ)
 
@@ -38,8 +41,11 @@ top:
 all:    lib
 
 lib:    $(LIBOBJ)
-	$(AR) $(LIB) $(LIBOBJ)
-	$(RANLIB) $(LIB) || echo Never mind.
+	# @$(foreach var,$(LIBOBJ),\
+    #     $(OBJCOPY) $(var) $(var);)
+	# $(AR) $(LIB) $(LIBOBJ)
+	# $(RANLIB) $(LIB) || echo Never mind.
+	$(LD) $(LIBOBJ) -o $(LIBCRYPTOBJ)
 	@touch lib
 
 rmd-586.s:	asm/rmd-586.pl ../perlasm/x86asm.pl
