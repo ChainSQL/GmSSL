@@ -40,9 +40,9 @@ TEST=constant_time_test.c
 ALLFILEOBJ_PATH=./gmalg
 
 LIB= $(TOP)/libcrypto.a
-LIBNEW= $(TOP)/libgmcrypto.a
+LIBFINAL= $(TOP)/libgmcrypto.a
 LIBCRYPTOBJ= $(ALLFILEOBJ_PATH)/libfirst$(DIR).o
-LIBFINAL_CRYPTOBJ= $(TOP)/libcrypto.o
+LIBINIT_CRYPTOBJ= $(TOP)/libcrypto.o
 LIBFINAL_CRYPTOBJ_STRIP= $(TOP)/libcryptostrip.o
 LIBCRYPTOBJ_HIDDEN= $(TOP)/libcryptohidden.o
 SHARED_LIB= libcrypto$(SHLIB_EXT)
@@ -125,12 +125,12 @@ $(LIB):	$(LIBOBJ)
 shared: buildinf.h lib subdirs
 	# FILESNAME=$(wildcard $(ALLFILEOBJ_PATH)/*.o)
 	# files:=$(foreach file,$(FILESNAME),$(file))
-	$(LD) $(wildcard $(ALLFILEOBJ_PATH)/*.o) -o $(LIBFINAL_CRYPTOBJ)
+	$(LD) $(wildcard $(ALLFILEOBJ_PATH)/*.o) -o $(LIBINIT_CRYPTOBJ)
 	# $(OBJCOPYRM) $(LIBFINAL_CRYPTOBJ) $(LIBFINAL_CRYPTOBJ_STRIP)
-	$(OBJCOPY) $(LIBFINAL_CRYPTOBJ) $(LIBCRYPTOBJ_HIDDEN)
+	$(OBJCOPY) $(LIBINIT_CRYPTOBJ) $(LIBCRYPTOBJ_HIDDEN)
 	$(AR) $(LIB) $(LIBCRYPTOBJ_HIDDEN)
-	$(OBJCOPYRM) $(LIB) $(LIBNEW)
-	#rm $(LIBFINAL_CRYPTOBJ) $(LIBCRYPTOBJ_HIDDEN)
+	$(OBJCOPYRM) $(LIB) $(LIBFINAL)
+	rm $(LIBINIT_CRYPTOBJ) $(LIBCRYPTOBJ_HIDDEN) $(LIB)
 
 	if [ -n "$(SHARED_LIBS)" ]; then \
 		(cd ..; $(MAKE) $(SHARED_LIB)); \
