@@ -183,7 +183,7 @@ Makefile.save
 *.bak
 cscope.*
 *.d
-
+.vscode
 # macOS
 .DS_Store
 *.tar.gz

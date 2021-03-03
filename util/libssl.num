@@ -409,3 +409,4 @@ SSL_session_reused                      408	1_1_0d	EXIST::FUNCTION:
 SSL_renegotiate_pending                 409	1_1_0d	EXIST::FUNCTION:
 SSL_CTX_flush_sessions                  410	1_1_0d	EXIST::FUNCTION:
 SSL_get_ciphers                         411	1_1_0d	EXIST::FUNCTION:
+SSL_CTX_set_ciphersuites                488	1_1_0d	EXIST::FUNCTION:

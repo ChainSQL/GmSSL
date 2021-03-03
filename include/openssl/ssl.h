@@ -1428,6 +1428,7 @@ void SSL_set_bio(SSL *s, BIO *rbio, BIO *wbio);
 __owur BIO *SSL_get_rbio(const SSL *s);
 __owur BIO *SSL_get_wbio(const SSL *s);
 __owur int SSL_set_cipher_list(SSL *s, const char *str);
+__owur int SSL_CTX_set_ciphersuites(SSL_CTX *ctx, const char *str);
 void SSL_set_read_ahead(SSL *s, int yes);
 __owur int SSL_get_verify_mode(const SSL *s);
 __owur int SSL_get_verify_depth(const SSL *s);
@@ -2149,6 +2150,7 @@ int ERR_load_SSL_strings(void);
 
 /* Function codes. */
 # define SSL_F_CHECK_SUITEB_CIPHER_LIST                   331
+# define SSL_F_CIPHERSUITE_CB                             622
 # define SSL_F_CT_MOVE_SCTS                               345
 # define SSL_F_CT_STRICT                                  349
 # define SSL_F_D2I_SSL_SESSION                            103

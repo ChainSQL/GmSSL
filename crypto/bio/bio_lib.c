@@ -154,6 +154,16 @@ void BIO_set_callback(BIO *b,
     b->callback = cb;
 }
 
+BIO_callback_fn_ex BIO_get_callback_ex(const BIO *b)
+{
+    return b->callback_ex;
+}
+
+void BIO_set_callback_ex(BIO *b, BIO_callback_fn_ex cb)
+{
+    b->callback_ex = cb;
+}
+
 void BIO_set_callback_arg(BIO *b, char *arg)
 {
     b->cb_arg = arg;
