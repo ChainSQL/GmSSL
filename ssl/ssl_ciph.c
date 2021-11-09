@@ -49,6 +49,7 @@
 # include <openssl/engine.h>
 #endif
 #include <openssl/crypto.h>
+#include <openssl/conf.h>
 #include "ssl_locl.h"
 #include "internal/thread_once.h"
 
