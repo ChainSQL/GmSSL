@@ -46,7 +46,11 @@ done
 [ "$SYSTEM" ] || SYSTEM=`(uname -s) 2>/dev/null`  || SYSTEM="unknown"
 [ "$BUILD" ] || VERSION=`(uname -v) 2>/dev/null` || VERSION="unknown"
 
-
+RET=`git pull`
+if [ "$RET" = "Already up to date." -a -e Makefile ];then
+        echo $RET
+        exit 0
+else
 # Now test for ISC and SCO, since it is has a braindamaged uname.
 #
 # We need to work around FreeBSD 1.1.5.1 
@@ -922,3 +926,4 @@ else
   echo "This system ($OUT) is not supported. See file INSTALL for details."
 fi
 )
+fi
