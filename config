@@ -258,11 +258,8 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	    Power*)
 		echo "ppc-apple-darwin${VERSION}"
 		;;
-	    x86_64)
-		echo "x86_64-apple-darwin${VERSION}"
-		;;
 	    *)
-		echo "i686-apple-darwin${VERSION}"
+		echo "${MACHINE}-apple-darwin${VERSION}"
 		;;
 	esac
 	exit 0
@@ -519,6 +516,10 @@ case "$GUESSOS" in
 	else
 	    OUT="darwin64-x86_64-cc"
 	fi ;;
+  $MACHINE-apple-darwin*)
+    options="$options no-asm"
+    OUT="darwin64-$MACHINE-cc"
+    ;;
   armv6+7-*-iphoneos)
 	options="$options -arch%20armv6 -arch%20armv7"
 	OUT="iphoneos-cross" ;;
